@@ -12,6 +12,10 @@ import com.maysu.model.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Long>{
 	Optional<Producto> findByNombre(String nombre); //Busca un solo producto
 	List<Producto> findAllByNombreContainingIgnoreCase(String nombre); // Busca varios con coincidencias Parciales
+	List<Producto> findByCategoriaId(Long categoriaId);
+	// Consulta productos con campo de oferta definido
+	List<Producto> findByPrecioOfertaNotNull();
+
 
 }
 

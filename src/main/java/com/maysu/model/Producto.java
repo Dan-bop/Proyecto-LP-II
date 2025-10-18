@@ -4,75 +4,50 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "productos")
 public class Producto {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	private String nombre;
-	private String descripcion;
-	private double precio;
-	private int stock;
-	private String imagenUrl;
-	
-	public Producto() {
-		super();
-	}
 
-	public Long getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 
-	public String getNombre() {
-		return nombre;
-	}
+    private String nombre;
+    private String descripcion;
+    private double precio;
+    private Double precioOferta; // ✅ Campo adicional para promociones
+    private int stock;
+    private String imagenUrl;
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public Producto() {}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    // Getters y setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-	public double getPrecio() {
-		return precio;
-	}
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-	public void setPrecio(double precio) {
-		this.precio = precio;
-	}
+    public double getPrecio() { return precio; }
+    public void setPrecio(double precio) { this.precio = precio; }
 
-	public int getStock() {
-		return stock;
-	}
+    public Double getPrecioOferta() { return precioOferta; }
+    public void setPrecioOferta(Double precioOferta) { this.precioOferta = precioOferta; }
 
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
 
-	public String getImagenUrl() {
-		return imagenUrl;
-	}
-
-	public void setImagenUrl(String imagenUrl) {
-		this.imagenUrl = imagenUrl;
-	}
-	
-	
-	
-
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 }

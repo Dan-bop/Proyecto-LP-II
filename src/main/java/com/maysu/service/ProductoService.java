@@ -39,5 +39,15 @@ public class ProductoService {
 	public void eliminarPorId(Long id) {
 		productoRepository.deleteById(id);
 	}
+	public List<Producto> listarPorCategoria(Long categoriaId) {
+	    return productoRepository.findByCategoriaId(categoriaId);
+	}
+	
+	// Devuelve productos que tienen precio de oferta
+	public List<Producto> listarConDescuento() {
+	    return productoRepository.findByPrecioOfertaNotNull();
+	}
+
+
 }
 

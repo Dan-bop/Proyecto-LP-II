@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacto - Comercial Maysu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Comercial Maysu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/catalago">Catálogo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/ofertas">Ofertas</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/contacto">Contacto</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Iniciar sesión</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container mt-4">
+    <h3 class="mb-4">Contáctanos</h3>
+
+    <!-- Mensaje de éxito -->
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}">Mensaje enviado</div>
+
+    <!-- Formulario vinculado a la entidad -->
+    <form th:action="@{/contacto}" th:object="${mensajeContacto}" method="post" class="row g-3">
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correo" th:field="*{correo}" required>
+        </div>
+        <div class="col-md-6">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="telefono" th:field="*{telefono}" required>
+        </div>
+        <div class="col-12">
+            <label for="asunto" class="form-label">Asunto</label>
+            <input type="text" class="form-control" id="asunto" th:field="*{asunto}" required>
+        </div>
+        <div class="col-12">
+            <label for="mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="mensaje" th:field="*{mensaje}" rows="4" required></textarea>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Enviar consulta</button>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    <p>&copy; 2025 Comercial Maysu | Íllimo, Lambayeque</p>
+    <p>Correo: comercial@maysu.com | WhatsApp: 999-999-999</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
