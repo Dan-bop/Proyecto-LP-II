@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Catálogo - Comercial Maysu</title>
@@ -19,7 +19,25 @@
                 <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link active" href="/catalago">Catálogo</a></li>
                 <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
-                <li class="nav-item"><a class="nav-link" href="/login">Iniciar sesión</a></li>
+
+                <!-- Si NO ha iniciado sesión -->
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Iniciar sesión</a>
+                </li>
+
+                <!-- Si SÍ ha iniciado sesión -->
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/cuenta}">Mi cuenta</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/pedidos}">Ver pedidos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/editar}">Editar perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Cerrar sesión</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
@@ -34,13 +52,13 @@
             <h5>Categorías</h5>
             <ul class="list-group mb-3">
                 <li class="list-group-item">
-                    <a href="/catalogo">Todas</a>
+                    <a th:href="@{/catalago}">Todas</a>
                 </li>
                 <li class="list-group-item" th:each="cat : ${categorias}">
-                    <a th:href="@{/catalogo(categoriaId=${cat.id})}" th:text="${cat.nombre}">Categoría</a>
+                    <a th:href="@{/catalago(categoriaId=${cat.id})}" th:text="${cat.nombre}">Categoría</a>
                 </li>
             </ul>
-            <a href="/ofertas" class="btn btn-outline-primary w-100">Ver ofertas</a>
+            <a th:href="@{/ofertas}" class="btn btn-outline-primary w-100">Ver ofertas</a>
         </div>
 
         <!-- Productos -->
@@ -48,8 +66,9 @@
             <h3>Productos disponibles</h3>
             <div class="row">
                 <div class="col-md-4 mb-4" th:each="producto : ${productos}">
-                    <div class="card h-100">
-                        <img th:src="${producto.imagenUrl}" class="card-img-top" alt="Imagen producto">
+                    <div class="card h-100 shadow-sm position-relative">
+                        <a th:href="@{/detalle/{id}(id=${producto.id})}" class="stretched-link"></a>
+                        <img th:src="@{${producto.imagenUrl}}" class="card-img-top" alt="Imagen producto">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${producto.nombre}">Nombre</h5>
                             <p class="card-text" th:text="${producto.descripcion}">Descripción</p>

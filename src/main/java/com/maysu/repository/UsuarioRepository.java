@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.maysu.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    Optional<Usuario> findByEmail(String email); // ✅ Devuelve Optional
+    Optional<Usuario> findByEmail(String email);
 }
+
+

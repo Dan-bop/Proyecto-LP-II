@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.maysu.model.Categoria;
@@ -27,18 +28,25 @@ public class CatalagoController {
 	private CategoriaService categoriaService;
 	
 	// Método que responde a la ruta /catalogo
-	@GetMapping("/catalago")
-	public String mostrarCatalago (@RequestParam(required = false) Long categoriaId, Model model) {
-		 // Obtener todas las categorías para mostrar en el filtro lateral
-		List<Categoria> categorias = categoriaService.listarTodas();
-		// Obtener productos según si se filtró por categoría o no
-		List<Producto> productos = (categoriaId != null)
-				? productosService.listarPorCategoria(categoriaId)
-				: productosService.ListarTodos();
-		
-		model.addAttribute("categorias", categorias);
-		model.addAttribute("productos", productos);
-		return "catalago";
+	
+
+	    @GetMapping("/catalago")
+	    public String mostrarCatalago(@RequestParam(required = false) Long categoriaId, Model model) {
+	        List<Categoria> categorias = categoriaService.listarTodas();
+	        List<Producto> productos = (categoriaId != null)
+	                ? productosService.listarPorCategoria(categoriaId)
+	                : productosService.ListarTodos();
+
+	        model.addAttribute("categorias", categorias);
+	        model.addAttribute("productos", productos);
+	        return "catalago"; 
+	    }
+	    @GetMapping("/detalle/{id}")
+	    public String mostrarDetalle(@PathVariable Long id, Model model) {
+	        Producto producto = productosService.buscarPorId(id);
+	        model.addAttribute("producto", producto);
+	        return "detalle";
+	    }
+
 	}
 
-}

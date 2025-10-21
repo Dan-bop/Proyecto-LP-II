@@ -25,9 +25,8 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
 
-        // Convertir roles a autoridades para Spring Security
         Set<GrantedAuthority> authorities = usuario.getRoles().stream()
-            .map(rol -> new SimpleGrantedAuthority(rol.getNombre())) // Ej: "ROLE_CLIENTE"
+            .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
             .collect(Collectors.toSet());
 
         return new org.springframework.security.core.userdetails.User(
@@ -36,5 +35,13 @@ public class UsuarioService implements UserDetailsService {
             authorities
         );
     }
-}
 
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
+    }
+
+    public void guardar(Usuario usuario) {
+        usuarioRepository.save(usuario);
+    }
+}

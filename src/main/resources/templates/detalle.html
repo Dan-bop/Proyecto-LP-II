@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${producto.nombre}">Detalle del producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar fragment -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Contenido -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img th:src="@{${producto.imagenUrl}}" class="img-fluid rounded" alt="Imagen del producto">
+        </div>
+        <div class="col-md-6">
+            <h2 th:text="${producto.nombre}">Nombre</h2>
+            <p th:text="${producto.descripcion}">Descripción</p>
+            <p><strong>Categoría:</strong> <span th:text="${producto.categoria.nombre}">Categoría</span></p>
+            <p class="fs-4 text-primary"><strong>S/. </strong><span th:text="${producto.precio}">0.00</span></p>
+            <form th:action="@{/carrito/agregar}" method="post">
+                <input type="hidden" name="productoId" th:value="${producto.id}" />
+                <button type="submit" class="btn btn-success">Agregar al carrito</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Footer fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -14,11 +14,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/catalago", "/contacto","ofertas", "login", "/registro", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/catalago", "/contacto", "/ofertas", "/login", "/registro","cuenta","detalle","editar","pedidos", "/css/**", "/js/**", "/images/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
+                .defaultSuccessUrl("/", true) // ← redirección fija al inicio
                 .permitAll()
             )
             .logout(logout -> logout
@@ -31,6 +32,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // ✅ Bean necesario para cifrado
+        return new BCryptPasswordEncoder();
     }
 }
