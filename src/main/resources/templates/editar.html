@@ -7,27 +7,48 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<div class="container mt-5">
-    <h2>Editar perfil</h2>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Comercial Maysu</a>
+    </div>
+</nav>
 
-    <form th:action="@{/cuenta/editar}" th:object="${usuario}" method="post" class="row g-3">
-        <div class="col-md-6">
+<div class="container mt-5" style="max-width: 600px;">
+    <h3 class="mb-4 text-center">Editar perfil</h3>
+
+	<form th:action="@{/cuenta/editar}" method="post">
+
+        <!-- ID oculto para identificar al usuario -->
+        <input type="hidden" name="id" th:value="${usuario.id}">
+
+        <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+            <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" required>
         </div>
-        <div class="col-md-6">
+
+        <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" id="apellido" name="apellido" th:value="${usuario.apellido}" required>
+        </div>
+
+        <div class="mb-3">
             <label for="email" class="form-label">Correo electrónico</label>
-            <input type="email" class="form-control" id="email" th:field="*{email}" readonly>
+            <input type="email" class="form-control" id="email" name="email" th:value="${usuario.email}" required>
         </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Guardar cambios</button>
-            <a th:href="@{/cuenta}" class="btn btn-secondary">Cancelar</a>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Nueva contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco si no desea cambiar">
         </div>
+
+        <button type="submit" class="btn btn-success w-100">Guardar cambios</button>
     </form>
 </div>
 
 <footer class="bg-dark text-white text-center mt-auto p-3">
-    <p>&copy; 2025 Comercial Maysu</p>
+    <p>&copy; 2025 Comercial Maysu | Íllimo, Lambayeque</p>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

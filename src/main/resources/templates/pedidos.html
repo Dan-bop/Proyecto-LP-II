@@ -46,28 +46,43 @@
 </nav>
 
 <!-- Contenido -->
+<!-- ... encabezado y navbar igual ... -->
+
 <div class="container mt-5">
     <h2>Historial de pedidos</h2>
 
-    <table class="table table-bordered mt-3">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="pedido : ${pedidos}">
-                <td th:text="${pedido.id}">1</td>
-                <td th:text="${#dates.format(pedido.fecha, 'dd/MM/yyyy')}">01/01/2025</td>
-                <td>S/. <span th:text="${pedido.total}">0.00</span></td>
-                <td th:text="${pedido.estado}">Pendiente</td>
-            </tr>
-        </tbody>
-    </table>
+    <div th:if="${pedidos.isEmpty()}">
+        <div class="alert alert-info mt-3">No tienes pedidos registrados.</div>
+    </div>
+
+    <div th:each="pedido : ${pedidos}" class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <strong>Pedido realizado el:</strong> <span th:text="${#dates.format(pedido.fecha, 'dd/MM/yyyy')}"></span>
+            <span class="float-end"><strong>Total pagado:</strong> S/. <span th:text="${pedido.total}"></span></span>
+        </div>
+        <div class="card-body">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="detalle : ${pedido.detalles}">
+                        <td th:text="${detalle.producto.nombre}">Producto</td>
+                        <td th:text="${detalle.cantidad}">1</td>
+                        <td>S/. <span th:text="${detalle.precioUnitario}">0.00</span></td>
+                        <td>S/. <span th:text="${detalle.subtotal}">0.00</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center mt-auto p-3">

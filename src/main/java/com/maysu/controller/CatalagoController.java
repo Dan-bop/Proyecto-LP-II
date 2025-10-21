@@ -1,5 +1,6 @@
 package com.maysu.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.maysu.model.Categoria;
+import com.maysu.model.ItemCarrito;
 import com.maysu.model.Producto;
 import com.maysu.service.CategoriaService;
 import com.maysu.service.ProductoService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 //Controlador para manejar la vista del catálogo público
@@ -30,17 +34,30 @@ public class CatalagoController {
 	// Método que responde a la ruta /catalogo
 	
 
-	    @GetMapping("/catalago")
-	    public String mostrarCatalago(@RequestParam(required = false) Long categoriaId, Model model) {
-	        List<Categoria> categorias = categoriaService.listarTodas();
-	        List<Producto> productos = (categoriaId != null)
-	                ? productosService.listarPorCategoria(categoriaId)
-	                : productosService.ListarTodos();
+	@GetMapping("/catalago")
+	public String mostrarCatalago(@RequestParam(required = false) Long categoriaId, Model model, HttpSession session) {
+	    // Obtener categorías y productos (ya implementado)
+	    List<Categoria> categorias = categoriaService.listarTodas();
+	    List<Producto> productos = (categoriaId != null)
+	            ? productosService.listarPorCategoria(categoriaId)
+	            : productosService.ListarTodos();
 
-	        model.addAttribute("categorias", categorias);
-	        model.addAttribute("productos", productos);
-	        return "catalago"; 
+	    // ✅ Asegurar que el carrito exista en sesión
+	    if (session.getAttribute("carrito") == null) {
+	        session.setAttribute("carrito", new ArrayList<ItemCarrito>());
 	    }
+
+	    // ✅ Agregar carrito al modelo para evitar errores en la vista
+	    model.addAttribute("carrito", session.getAttribute("carrito"));
+
+	    // Mantener lo que ya funcionaba
+	    model.addAttribute("categorias", categorias);
+	    model.addAttribute("productos", productos);
+
+	    return "catalago";
+	}
+
+	    
 	    @GetMapping("/detalle/{id}")
 	    public String mostrarDetalle(@PathVariable Long id, Model model) {
 	        Producto producto = productosService.buscarPorId(id);
