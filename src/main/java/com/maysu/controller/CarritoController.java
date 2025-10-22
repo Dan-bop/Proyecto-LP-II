@@ -42,28 +42,46 @@ public class CarritoController {
     }
 
     @PostMapping("/carrito/agregar")
-    public String agregarAlCarrito(@RequestParam("productoId") Long id, HttpSession session) {
-        Producto producto = productoService.buscarPorId(id);
-        if (producto == null) return "redirect:/catalago";
+    public String agregarAlCarrito(@RequestParam Long productoId,
+                                   @RequestParam(defaultValue = "1") int cantidad,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        // Obtén el producto
+        Producto producto = productoService.buscarPorId(productoId);
+        if (producto == null) {
+            redirectAttributes.addFlashAttribute("error", "Producto no encontrado");
+            return "redirect:/catalago";  // Redirige de vuelta al catálogo si hay error
+        }
 
-        List<ItemCarrito> carrito = getCarrito(session);
+        // Obtén o inicializa el carrito desde la sesión
+        List<ItemCarrito> carrito = (List<ItemCarrito>) session.getAttribute("carrito");
+        if (carrito == null) {
+            carrito = new ArrayList<>();
+        }
+
+        // Busca si el producto ya está en el carrito
         boolean encontrado = false;
-
         for (ItemCarrito item : carrito) {
-            if (item.getProducto().getId().equals(id)) {
-                item.setCantidad(item.getCantidad() + 1);
+            if (item.getProducto().getId().equals(productoId)) {
+                item.setCantidad(item.getCantidad() + cantidad);  // Suma la cantidad
                 encontrado = true;
                 break;
             }
         }
 
+        // Si no está, agrégalo
         if (!encontrado) {
-            carrito.add(new ItemCarrito(producto, 1));
+            ItemCarrito nuevoItem = new ItemCarrito(producto, cantidad); // ✅ corregido
+            carrito.add(nuevoItem);
         }
 
+        // Actualiza el carrito en sesión
         session.setAttribute("carrito", carrito);
+
+        redirectAttributes.addFlashAttribute("exito", "Producto agregado al carrito.");
         return "redirect:/catalago";
     }
+
 
     @PostMapping("/carrito/eliminar")
     public String eliminarDelCarrito(@RequestParam("productoId") Long id, HttpSession session) {

@@ -58,12 +58,20 @@ public class CatalagoController {
 	}
 
 	    
-	    @GetMapping("/detalle/{id}")
-	    public String mostrarDetalle(@PathVariable Long id, Model model) {
-	        Producto producto = productosService.buscarPorId(id);
-	        model.addAttribute("producto", producto);
-	        return "detalle";
-	    }
+	@GetMapping("/detalle/{id}")
+    public String mostrarDetalle(@PathVariable Long id, Model model, HttpSession session) {  // ✅ Agrega HttpSession
+        Producto producto = productosService.buscarPorId(id);
+        model.addAttribute("producto", producto);
+        
+        // ✅ Corrección: Obtén o inicializa el carrito desde la sesión
+        List<ItemCarrito> carrito = (List<ItemCarrito>) session.getAttribute("carrito");
+        if (carrito == null) {
+            carrito = new ArrayList<>();  // Inicializa como lista vacía si no existe en la sesión
+        }
+        model.addAttribute("carrito", carrito);  // ✅ Añade carrito al modelo
+        
+        return "detalle";  // Asegúrate de que coincida con el nombre de tu plantilla (ej. "detalleProducto" si es diferente)
+    }
 
 	}
 

@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 @Configuration
 public class SecurityConfig {
 
@@ -14,12 +13,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/catalago", "/contacto", "/ofertas", "/login", "/registro","cuenta","detalle","editar","pedidos","carrito", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/", "/catalago", "/contacto", "/ofertas", "/login", "/registro", "/cuenta", "/detalle", "/editar", "/pedidos", "/carrito", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN") // 🔒 Protege rutas de administrador
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true) // ← redirección fija al inicio
+                .defaultSuccessUrl("/admin", true) // ✅ Ahora redirige al dashboard
                 .permitAll()
             )
             .logout(logout -> logout

@@ -29,7 +29,7 @@ public class Producto {
 
     public Producto() {}
 
-    // Getters y setters
+    // Getters y setters existentes
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -50,4 +50,13 @@ public class Producto {
 
     public String getImagenUrl() { return imagenUrl; }
     public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
+
+    // ✅ Agrega estos métodos para 'categoria' (esto resuelve el error)
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 }

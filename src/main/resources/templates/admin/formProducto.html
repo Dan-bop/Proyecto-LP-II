@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+
+<h3 class="mb-4 text-center">Agregar / Editar producto</h3>
+
+<form th:action="@{/admin/productos/guardar}" method="post" enctype="multipart/form-data" th:object="${producto}">
+    <input type="hidden" th:field="*{id}">
+
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Descripción</label>
+        <textarea th:field="*{descripcion}" class="form-control" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Precio</label>
+        <input type="number" step="0.01" th:field="*{precio}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Precio oferta (opcional)</label>
+        <input type="number" step="0.01" th:field="*{precioOferta}" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label>Stock</label>
+        <input type="number" th:field="*{stock}" class="form-control" required>
+    </div>
+
+    <!-- 🔑 Corrección: mapear al id de la categoría -->
+    <div class="mb-3">
+        <label>Categoría</label>
+        <select th:field="*{categoria.id}" class="form-select" required>
+            <option th:each="cat : ${categorias}"
+                    th:value="${cat.id}"
+                    th:text="${cat.nombre}">
+            </option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Imagen del producto</label>
+        <input type="file" name="imagen" class="form-control">
+        <!-- ✅ Corrección aquí -->
+        <div th:if="${producto.imagenUrl != null and #strings.isNotEmpty(producto.imagenUrl)}" class="mt-2">
+            <img th:src="${producto.imagenUrl}" alt="Imagen actual" width="120">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a th:href="@{/admin/productos}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+</body>
+</html>
