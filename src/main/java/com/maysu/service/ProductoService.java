@@ -47,7 +47,15 @@ public class ProductoService {
 	public List<Producto> listarConDescuento() {
 	    return productoRepository.findByPrecioOfertaNotNull();
 	}
+	public List<Producto> listarDisponibles() {
+	    return productoRepository.findByActivoTrueAndStockGreaterThan(0);
+	}
+
+	public List<Producto> listarDisponiblesPorCategoria(Long categoriaId) {
+	    return productoRepository.findByCategoriaIdAndActivoTrueAndStockGreaterThan(categoriaId, 0);
+	}
+
+
 
 
 }
-

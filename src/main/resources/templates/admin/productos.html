@@ -9,14 +9,19 @@
 
 <h3 class="mb-4 text-center">Gestión de productos</h3>
 
-<div class="d-flex justify-content-between mb-3">
-    <!-- Botón para volver al panel -->
-    <a th:href="@{/admin}" class="btn btn-secondary">⬅ Volver al Panel</a>
+<!-- 🔍 Buscador -->
+<form class="input-group mb-4" th:action="@{/admin/productos/buscar}" method="get">
+    <input type="text" name="query" class="form-control" placeholder="Buscar productos por nombre..." aria-label="Buscar">
+    <button class="btn btn-outline-primary" type="submit">Buscar</button>
+</form>
 
-    <!-- Botón para crear nuevo producto -->
+<!-- 🔁 Botones de navegación -->
+<div class="d-flex justify-content-between mb-3">
+    <a th:href="@{/admin}" class="btn btn-secondary">⬅ Volver al Panel</a>
     <a th:href="@{/admin/productos/nuevo}" class="btn btn-primary">Nuevo producto</a>
 </div>
 
+<!-- 🧾 Tabla de productos -->
 <table class="table table-striped">
     <thead>
         <tr>
@@ -24,24 +29,47 @@
             <th>Precio</th>
             <th>Stock</th>
             <th>Categoría</th>
+            <th>Estado</th>
             <th>Imagen</th>
             <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
+        <!-- 🔁 Iteración de productos -->
         <tr th:each="prod : ${productos}">
             <td th:text="${prod.nombre}"></td>
             <td th:text="${prod.precio}"></td>
-            <td th:text="${prod.stock}"></td>
+
+            <!-- ⚠️ Advertencia si stock es 0 -->
+            <td>
+                <span th:if="${prod.stock == 0}" class="text-danger fw-bold">Agotado</span>
+                <span th:if="${prod.stock > 0}" th:text="${prod.stock}"></span>
+            </td>
+
             <td th:text="${prod.categoria.nombre}"></td>
+
+            <!-- ✅ Estado visual -->
+            <td>
+                <span th:if="${prod.activo}" class="badge bg-success">Activo</span>
+                <span th:if="${!prod.activo}" class="badge bg-secondary">Inactivo</span>
+            </td>
+
+            <!-- 🖼️ Imagen -->
             <td>
                 <img th:if="${prod.imagenUrl != null}" th:src="@{${prod.imagenUrl}}" width="80">
             </td>
+
+            <!-- 🛠️ Acciones -->
             <td>
                 <a th:href="@{'/admin/productos/editar/' + ${prod.id}}" class="btn btn-warning btn-sm">Editar</a>
                 <a th:href="@{'/admin/productos/eliminar/' + ${prod.id}}" class="btn btn-danger btn-sm"
                    onclick="return confirm('¿Seguro que deseas eliminar este producto?')">Eliminar</a>
             </td>
+        </tr>
+
+        <!-- ⚠️ Mensaje si no hay resultados -->
+        <tr th:if="${#lists.isEmpty(productos)}">
+            <td colspan="7" class="text-center text-muted">No se encontraron productos.</td>
         </tr>
     </tbody>
 </table>

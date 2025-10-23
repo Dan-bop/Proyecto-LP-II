@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.maysu.model.Categoria;
 import com.maysu.model.ItemCarrito;
@@ -18,60 +16,79 @@ import com.maysu.service.ProductoService;
 
 import jakarta.servlet.http.HttpSession;
 
-
-//Controlador para manejar la vista del catálogo público
 @Controller
 public class CatalagoController {
-	
-	// Inyección del servicio de productos
-	@Autowired
-	private ProductoService productosService;
-	
-	// Inyección del servicio de categorías
-	@Autowired
-	private CategoriaService categoriaService;
-	
-	// Método que responde a la ruta /catalogo
-	
 
-	@GetMapping("/catalago")
-	public String mostrarCatalago(@RequestParam(required = false) Long categoriaId, Model model, HttpSession session) {
-	    // Obtener categorías y productos (ya implementado)
-	    List<Categoria> categorias = categoriaService.listarTodas();
-	    List<Producto> productos = (categoriaId != null)
-	            ? productosService.listarPorCategoria(categoriaId)
-	            : productosService.ListarTodos();
+    @Autowired
+    private ProductoService productosService;
 
-	    // ✅ Asegurar que el carrito exista en sesión
-	    if (session.getAttribute("carrito") == null) {
-	        session.setAttribute("carrito", new ArrayList<ItemCarrito>());
-	    }
+    @Autowired
+    private CategoriaService categoriaService;
 
-	    // ✅ Agregar carrito al modelo para evitar errores en la vista
-	    model.addAttribute("carrito", session.getAttribute("carrito"));
+    // 🟢 Muestra el catálogo general o filtrado por categoría
+    @GetMapping("/catalago")
+    public String mostrarCatalago(@RequestParam(required = false) Long categoriaId,
+                                  Model model,
+                                  HttpSession session) {
+        List<Categoria> categorias = categoriaService.listarTodas();
 
-	    // Mantener lo que ya funcionaba
-	    model.addAttribute("categorias", categorias);
-	    model.addAttribute("productos", productos);
+        // ✅ Filtra productos activos y con stock
+        List<Producto> productos = (categoriaId != null)
+                ? productosService.listarDisponiblesPorCategoria(categoriaId)
+                : productosService.listarDisponibles();
 
-	    return "catalago";
-	}
-
-	    
-	@GetMapping("/detalle/{id}")
-    public String mostrarDetalle(@PathVariable Long id, Model model, HttpSession session) {  // ✅ Agrega HttpSession
-        Producto producto = productosService.buscarPorId(id);
-        model.addAttribute("producto", producto);
-        
-        // ✅ Corrección: Obtén o inicializa el carrito desde la sesión
-        List<ItemCarrito> carrito = (List<ItemCarrito>) session.getAttribute("carrito");
-        if (carrito == null) {
-            carrito = new ArrayList<>();  // Inicializa como lista vacía si no existe en la sesión
+        // ✅ Asegura que el carrito exista en sesión
+        if (session.getAttribute("carrito") == null) {
+            session.setAttribute("carrito", new ArrayList<ItemCarrito>());
         }
-        model.addAttribute("carrito", carrito);  // ✅ Añade carrito al modelo
-        
-        return "detalle";  // Asegúrate de que coincida con el nombre de tu plantilla (ej. "detalleProducto" si es diferente)
+
+        // ✅ Agrega datos al modelo
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("productos", productos);
+        model.addAttribute("carrito", session.getAttribute("carrito"));
+
+        return "catalago";
     }
 
-	}
+    // 🔍 Muestra resultados de búsqueda reutilizando la vista del catálogo
+    @GetMapping("/buscar")
+    public String buscarProductos(@RequestParam("query") String query,
+                                  Model model,
+                                  HttpSession session) {
+        List<Producto> productos = productosService.buscarPorNombreParcial(query);
+        List<Categoria> categorias = categoriaService.listarTodas();
 
+        // ✅ Asegura que el carrito exista en sesión
+        if (session.getAttribute("carrito") == null) {
+            session.setAttribute("carrito", new ArrayList<ItemCarrito>());
+        }
+
+        // ✅ Agrega datos al modelo
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("productos", productos);
+        model.addAttribute("carrito", session.getAttribute("carrito"));
+        model.addAttribute("busqueda", query); // Para mostrar mensaje si no hay resultados
+
+        return "catalago";
+    }
+
+    // 🔍 Muestra el detalle de un producto
+    @GetMapping("/detalle/{id}")
+    public String mostrarDetalle(@PathVariable Long id,
+                                 Model model,
+                                 HttpSession session) {
+        Producto producto = productosService.buscarPorId(id);
+
+        // ✅ Asegura que el carrito exista en sesión
+        List<ItemCarrito> carrito = (List<ItemCarrito>) session.getAttribute("carrito");
+        if (carrito == null) {
+            carrito = new ArrayList<>();
+        }
+
+        // ✅ Agrega datos al modelo
+        model.addAttribute("producto", producto);
+        model.addAttribute("carrito", carrito);
+
+        return "detalle"; // Asegúrate de tener esta vista en templates/
+    }
+}

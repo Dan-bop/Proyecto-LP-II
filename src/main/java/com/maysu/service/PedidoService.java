@@ -1,7 +1,6 @@
 package com.maysu.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +48,22 @@ public class PedidoService {
         return pedidoRepository.save(pedido); // guarda pedido + detalles
     }
 
-    /**
-     * Lista los pedidos del cliente para mostrar en la vista.
-     */
+   
+     //Lista los pedidos del cliente para mostrar en la vista.
+     
     public List<Pedido> listarPorUsuario(Long usuarioId) {
         return pedidoRepository.findByUsuarioId(usuarioId);
+    }
+
+    
+     // Guarda un pedido ya construido (usado desde el controlador).
+     
+    public void guardar(Pedido pedido) {
+        pedidoRepository.save(pedido);
+    }
+
+
+    public Pedido buscarUltimoPedidoDe(Usuario usuario) {
+        return pedidoRepository.findTopByUsuarioOrderByFechaDesc(usuario).orElse(null);
     }
 }

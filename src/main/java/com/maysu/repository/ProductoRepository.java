@@ -15,6 +15,11 @@ public interface ProductoRepository extends JpaRepository<Producto, Long>{
 	List<Producto> findByCategoriaId(Long categoriaId);
 	// Consulta productos con campo de oferta definido
 	List<Producto> findByPrecioOfertaNotNull();
+	List<Producto> findByActivoTrue();
+	List<Producto> findByActivoTrueAndStockGreaterThan(int cantidad);
+	List<Producto> findByCategoriaIdAndActivoTrueAndStockGreaterThan(Long categoriaId, int cantidad);
+
+
 
 
 }

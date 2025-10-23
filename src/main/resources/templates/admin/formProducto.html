@@ -37,7 +37,6 @@
         <input type="number" th:field="*{stock}" class="form-control" required>
     </div>
 
-    <!-- 🔑 Corrección: mapear al id de la categoría -->
     <div class="mb-3">
         <label>Categoría</label>
         <select th:field="*{categoria.id}" class="form-select" required>
@@ -48,12 +47,17 @@
         </select>
     </div>
 
+    <!-- ✅ Campo para activar/desactivar el producto -->
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" th:field="*{activo}" id="activo">
+        <label class="form-check-label" for="activo">Producto activo</label>
+    </div>
+
     <div class="mb-3">
         <label>Imagen del producto</label>
         <input type="file" name="imagen" class="form-control">
-        <!-- ✅ Corrección aquí -->
-        <div th:if="${producto.imagenUrl != null and #strings.isNotEmpty(producto.imagenUrl)}" class="mt-2">
-            <img th:src="${producto.imagenUrl}" alt="Imagen actual" width="120">
+        <div th:if="${producto.imagenUrl != null and producto.imagenUrl != ''}" class="mt-2">
+            <img th:src="@{${producto.imagenUrl}}" alt="Imagen actual" width="120">
         </div>
     </div>
 

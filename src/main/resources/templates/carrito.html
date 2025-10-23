@@ -14,12 +14,16 @@
     <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-	<div th:if="${carrito == null or carrito.size() == 0}">
+    <!-- Carrito vacío -->
+    <div th:if="${carrito == null or #lists.isEmpty(carrito)}">
         <p>No hay productos en el carrito.</p>
-        <a href="/catalago" class="btn btn-primary">Ir al catálago</a>
+		<a href="/catalago" class="btn btn-primary">Ir al catálogo</a>
+
+
     </div>
 
-    <div th:if="${carrito.size() > 0}">
+    <!-- Carrito con productos -->
+    <div th:if="${carrito != null and !#lists.isEmpty(carrito)}">
         <table class="table table-bordered mt-3">
             <thead class="table-dark">
                 <tr>
@@ -37,7 +41,10 @@
                     <td th:text="${item.cantidad}">1</td>
                     <td>S/. <span th:text="${item.subtotal}">0.00</span></td>
                     <td>
-                        <a th:href="@{/carrito/eliminar(id=${item.producto.id})}" class="btn btn-sm btn-danger">Eliminar</a>
+                        <form th:action="@{/carrito/eliminar}" method="post" style="display:inline;">
+                            <input type="hidden" name="productoId" th:value="${item.producto.id}" />
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
@@ -45,9 +52,9 @@
 
         <div class="text-end">
             <h4>Total: S/. <span th:text="${total}">0.00</span></h4>
-            <form th:action="@{/carrito/confirmar}" method="post">
-                <button type="submit" class="btn btn-success">Confirmar pedido</button>
-            </form>
+			<form th:action="@{/checkout}" method="get">
+			    <button type="submit" class="btn btn-success">Confirmar pedido</button>
+			
         </div>
     </div>
 </div>

@@ -1,3 +1,4 @@
+
 package com.maysu.model;
 
 import java.util.Collection;

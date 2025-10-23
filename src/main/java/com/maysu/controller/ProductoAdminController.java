@@ -4,17 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,6 +29,14 @@ public class ProductoAdminController {
     @Autowired
     private CategoriaService categoriaService;
 
+    // 🔍 Buscador por nombre
+    @GetMapping("/buscar")
+    public String buscarProductos(@RequestParam("query") String query, Model model) {
+        List<Producto> productos = productoService.buscarPorNombreParcial(query);
+        model.addAttribute("productos", productos);
+        return "admin/productos";
+    }
+
     // 🟢 Mostrar formulario de creación
     @GetMapping("/nuevo")
     public String nuevoProducto(Model model) {
@@ -41,42 +45,42 @@ public class ProductoAdminController {
         return "admin/formProducto";
     }
 
- // 🟢 Guardar producto
+    // 💾 Guardar producto (nuevo o editado)
     @PostMapping("/guardar")
     public String guardarProducto(@ModelAttribute Producto producto,
                                   @RequestParam("imagen") MultipartFile archivo,
                                   RedirectAttributes redirectAttrs) {
+        // 🖼️ Procesar imagen si se subió
         if (!archivo.isEmpty()) {
             try {
                 String nombreLimpio = producto.getNombre().toLowerCase().replaceAll("\\s+", "-");
                 String nombreArchivo = nombreLimpio + "-" + System.currentTimeMillis() + ".jpg";
 
-                // Guardar en D:/imagenes
                 Path ruta = Paths.get("D:/imagenes", nombreArchivo);
                 Files.write(ruta, archivo.getBytes());
 
-                // URL pública que se servirá desde /images/productos/
                 producto.setImagenUrl("/images/productos/" + nombreArchivo);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        // ⚙️ Automatizar estado según stock
+        producto.setActivo(producto.getStock() > 0);
 
         productoService.guardar(producto);
         redirectAttrs.addFlashAttribute("exito", "Producto guardado correctamente.");
         return "redirect:/admin/productos";
     }
 
-
-    // 🟢 Listar productos
+    // 📋 Listar todos los productos
     @GetMapping
     public String listarProductos(Model model) {
         model.addAttribute("productos", productoService.ListarTodos());
         return "admin/productos";
     }
 
-    // 🟢 Editar producto
+    // ✏️ Mostrar formulario de edición
     @GetMapping("/editar/{id}")
     public String editarProducto(@PathVariable Long id, Model model) {
         Producto producto = productoService.buscarPorId(id);
@@ -85,7 +89,7 @@ public class ProductoAdminController {
         return "admin/formProducto";
     }
 
-    // 🟢 Eliminar producto
+    // 🗑️ Eliminar producto
     @GetMapping("/eliminar/{id}")
     public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttrs) {
         productoService.eliminarPorId(id);

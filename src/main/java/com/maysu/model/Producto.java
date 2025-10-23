@@ -1,12 +1,6 @@
 package com.maysu.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "productos")
@@ -16,10 +10,12 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 🔗 Relación con la categoría del producto
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    // 📝 Datos básicos del producto
     private String nombre;
     private String descripcion;
     private double precio;
@@ -27,9 +23,14 @@ public class Producto {
     private int stock;
     private String imagenUrl;
 
+    // ✅ Nuevo campo: controla si el producto está disponible para la venta
+    @Column(nullable = false)
+    private boolean activo = true;
+
+    // 🔧 Constructor vacío requerido por JPA
     public Producto() {}
 
-    // Getters y setters existentes
+    // 🔧 Getters y setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -51,12 +52,10 @@ public class Producto {
     public String getImagenUrl() { return imagenUrl; }
     public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
-    // ✅ Agrega estos métodos para 'categoria' (esto resuelve el error)
-    public Categoria getCategoria() {
-        return categoria;
-    }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
+    // ✅ Getter y setter para el campo 'activo'
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 }
