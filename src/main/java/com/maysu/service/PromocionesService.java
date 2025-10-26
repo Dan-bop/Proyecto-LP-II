@@ -32,5 +32,25 @@ public class PromocionesService {
 			promocionRepository.save(promo);
 		}
 	}
+	/**
+     * (Admin) Lista TODAS las promociones, activas e inactivas.
+     */
+    public List<Promocion> listarTodas() {
+        return promocionRepository.findAll();
+    }
+
+    /**
+     * (Admin) Busca una promoción por su ID para el formulario de editar.
+     */
+    public Promocion buscarPorId(Long id) {
+        return promocionRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * (Admin) Elimina una promoción de la base de datos.
+     */
+    public void eliminarPorId(Long id) {
+        promocionRepository.deleteById(id);
+    }
 
 }

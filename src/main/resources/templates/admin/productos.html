@@ -46,7 +46,7 @@
                 <span th:if="${prod.stock > 0}" th:text="${prod.stock}"></span>
             </td>
 
-            <td th:text="${prod.categoria.nombre}"></td>
+            <td th:text="${prod.categoria?.nombre ?: 'Sin categoría'}"></td>
 
             <!-- ✅ Estado visual -->
             <td>

@@ -13,4 +13,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     // ✅ Método para obtener el último pedido por fecha
     Optional<Pedido> findTopByUsuarioOrderByFechaDesc(Usuario usuario);
+    
+    List<Pedido> findByEstado(String estado);
 }

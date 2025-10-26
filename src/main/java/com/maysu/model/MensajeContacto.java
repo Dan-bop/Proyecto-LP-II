@@ -25,6 +25,17 @@ public class MensajeContacto {
 	private String mensaje;
 	
 	private LocalDateTime fechaEnvio;
+	
+	@Column(nullable = false)
+	private boolean atendido = false; // Por defecto, un mensaje nuevo no está atendido
+
+	public boolean isAtendido() {
+	    return atendido;
+	}
+
+	public void setAtendido(boolean atendido) {
+	    this.atendido = atendido;
+	}
 
 	public MensajeContacto() {
 		super();

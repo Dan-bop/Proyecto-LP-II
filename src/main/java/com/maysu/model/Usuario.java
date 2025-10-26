@@ -2,6 +2,7 @@
 package com.maysu.model;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -53,6 +55,10 @@ public class Usuario implements UserDetails {
     @Transient
     private Set<GrantedAuthority> authorities;
 
+ // Define la relación inversa: un Usuario puede tener muchos Pedidos.
+    @OneToMany(mappedBy = "usuario")
+    private List<Pedido> pedidos;
+
     public Usuario() {}
 
     // ✅ Getters y setters
@@ -76,6 +82,13 @@ public class Usuario implements UserDetails {
 
     public void setAuthorities(Set<GrantedAuthority> authorities) {
         this.authorities = authorities;
+    }
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     // ✅ Implementación de UserDetails

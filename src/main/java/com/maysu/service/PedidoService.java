@@ -20,7 +20,7 @@ public class PedidoService {
     private PedidoRepository pedidoRepository;
 
     /**
-     * Guarda el pedido completo con sus detalles desde el carrito.
+     * (Cliente) Guarda el pedido completo con sus detalles desde el carrito.
      */
     public Pedido confirmarPedido(List<ItemCarrito> carrito, Usuario cliente) {
         Pedido pedido = new Pedido();
@@ -48,22 +48,52 @@ public class PedidoService {
         return pedidoRepository.save(pedido); // guarda pedido + detalles
     }
 
-   
-     //Lista los pedidos del cliente para mostrar en la vista.
-     
+    
+    /**
+     * (Cliente) Lista los pedidos del cliente para mostrar en la vista "Mi Cuenta".
+     */
     public List<Pedido> listarPorUsuario(Long usuarioId) {
         return pedidoRepository.findByUsuarioId(usuarioId);
     }
 
     
-     // Guarda un pedido ya construido (usado desde el controlador).
-     
+    /**
+     * (Genérico) Guarda un pedido ya construido.
+     * Lo usa el checkout y la actualización de estado del admin.
+     */
     public void guardar(Pedido pedido) {
         pedidoRepository.save(pedido);
     }
 
-
+    /**
+     * (Cliente) Busca el último pedido de un usuario (para la pág. de confirmación).
+     */
     public Pedido buscarUltimoPedidoDe(Usuario usuario) {
         return pedidoRepository.findTopByUsuarioOrderByFechaDesc(usuario).orElse(null);
+    }
+
+    // --------------------------------------------------------------------
+    // MÉTODOS AÑADIDOS PARA EL PANEL DE ADMINISTRACIÓN
+    // --------------------------------------------------------------------
+
+    /**
+     * (Admin) Lista TODOS los pedidos de la base de datos.
+     */
+    public List<Pedido> listarTodos() {
+        return pedidoRepository.findAll();
+    }
+
+    /**
+     * (Admin) Busca un pedido específico por su ID.
+     */
+    public Pedido buscarPorId(Long id) {
+        return pedidoRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * (Admin) Lista solo los pedidos que coinciden con un estado.
+     */
+    public List<Pedido> listarPorEstado(String estado) {
+        return pedidoRepository.findByEstado(estado);
     }
 }

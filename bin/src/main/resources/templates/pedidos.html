@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis pedidos - Comercial Maysu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Menú de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Comercial Maysu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/catalago">Catálogo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/cuenta/pedidos">Pedidos</a></li>
+
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Iniciar sesión</a>
+                </li>
+
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/cuenta}">Mi cuenta</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/pedidos}">Ver pedidos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/editar}">Editar perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
+                        <li><a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="container mt-5">
+    <h2 class="mb-4">🧾 Historial de pedidos</h2>
+
+    <div th:if="${pedidos.isEmpty()}">
+        <div class="alert alert-info">No tienes pedidos registrados.</div>
+    </div>
+
+    <div th:each="pedido : ${pedidos}" class="card mb-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Pedido realizado el:</strong>
+                <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy')}">01/01/2025</span>
+            </div>
+            <div>
+                <strong>Total pagado:</strong> S/. <span th:text="${pedido.total}">0.00</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="detalle : ${pedido.detalles}">
+                            <td th:text="${detalle.producto.nombre}">Producto</td>
+                            <td th:text="${detalle.cantidad}">1</td>
+                            <td>S/. <span th:text="${detalle.precioUnitario}">0.00</span></td>
+                            <td>S/. <span th:text="${detalle.subtotal}">0.00</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    <p>&copy; 2025 Comercial Maysu</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
