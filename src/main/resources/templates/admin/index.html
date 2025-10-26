@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+
+<h2 class="mb-4 text-center">Panel de Administración</h2>
+
+<div class="row g-3">
+    <!-- Productos -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Productos</h5>
+                <p class="card-text">Gestiona el catálogo de productos.</p>
+                <a th:href="@{/admin/productos}" class="btn btn-primary">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categorías -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Categorías</h5>
+                <p class="card-text">Organiza las categorías de productos.</p>
+                <a th:href="@{/admin/categorias}" class="btn btn-success">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pedidos -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Pedidos</h5>
+                <p class="card-text">Revisa y actualiza pedidos.</p>
+                <a th:href="@{/admin/pedidos}" class="btn btn-warning">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Usuarios</h5>
+                <p class="card-text">Administra clientes y administradores.</p>
+                <a th:href="@{/admin/usuarios}" class="btn btn-info">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roles -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Roles</h5>
+                <p class="card-text">Gestiona permisos y roles.</p>
+                <a th:href="@{/admin/roles}" class="btn btn-dark">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promociones -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Promociones</h5>
+                <p class="card-text">Crea y administra promociones.</p>
+                <a th:href="@{/admin/promociones}" class="btn btn-outline-primary">Entrar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensajes de contacto -->
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Mensajes</h5>
+                <p class="card-text">Lee mensajes de clientes.</p>
+                <a th:href="@{/admin/mensajes}" class="btn btn-outline-success">Entrar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+	<form th:action="@{/logout}" method="post" class="d-inline">
+	    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+	</form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo - Comercial Maysu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- 🔼 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Comercial Maysu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/catalago">Catálogo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                <li class="nav-item"><a class="nav-link" href="/ofertas">Ofertas</a></li>
+            </ul>
+
+            <!-- 🔍 Buscador -->
+            <form class="d-flex me-3" th:action="@{/buscar}" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Buscar productos..." aria-label="Buscar">
+                <button class="btn btn-outline-light" type="submit">Buscar</button>
+            </form>
+
+            <!-- 🛒 Carrito -->
+            <div class="nav-item dropdown me-3" sec:authorize="isAuthenticated()">
+                <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                    🛒 <span class="badge bg-light text-dark" th:text="${carrito != null ? carrito.size() : 0}">0</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 300px;">
+                    <li th:if="${carrito == null or #lists.isEmpty(carrito)}" class="text-center text-muted">Carrito vacío</li>
+                    <li th:each="item : ${carrito != null ? carrito : #lists.emptyList()}">
+                        <div class="d-flex align-items-center mb-2">
+                            <img th:src="${item.producto.imagenUrl}" alt="img" class="me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div>
+                                <strong th:text="${item.producto.nombre}">Producto</strong><br>
+                                <small>Cant: <span th:text="${item.cantidad}">1</span> | S/. <span th:text="${item.subtotal}">0.00</span></small>
+                            </div>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="text-center">
+                        <a href="/carrito" class="btn btn-sm btn-primary">Ver carrito</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 🔐 Usuario -->
+            <ul class="navbar-nav">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" href="/login">Iniciar sesión</a>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span sec:authentication="name">Usuario</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/cuenta}">Mi cuenta</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/pedidos}">Ver pedidos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/cuenta/editar}">Editar perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;"></form>
+                        <li><a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit();">Cerrar sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 🔽 Contenido -->
+<div class="container-fluid mt-4">
+    <div class="row">
+
+        <!-- Filtro lateral -->
+        <div class="col-md-3">
+            <h5>Categorías</h5>
+            <ul class="list-group mb-3">
+                <li class="list-group-item">
+                    <a th:href="@{/catalago}">Todas</a>
+                </li>
+                <li class="list-group-item" th:each="cat : ${categorias}">
+                    <a th:href="@{/catalago(categoriaId=${cat.id})}" th:text="${cat.nombre}">Categoría</a>
+                </li>
+            </ul>
+            <a th:href="@{/ofertas}" class="btn btn-outline-primary w-100">Ver ofertas</a>
+        </div>
+
+        <!-- Productos -->
+        <div class="col-md-9">
+            <h3>Productos disponibles</h3>
+
+            <!-- 🟡 Mensaje si no hay resultados -->
+            <div th:if="${#lists.isEmpty(productos)}" class="alert alert-warning">
+                <strong>⚠️ No se encontraron productos</strong>
+                <span th:if="${busqueda != null}">para "<span th:text="${busqueda}">...</span>"</span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4" th:each="producto : ${productos}">
+                    <div class="card h-100 shadow-sm position-relative">
+                        <a th:href="@{/detalle/{id}(id=${producto.id})}">
+                            <img th:src="@{${producto.imagenUrl}}" class="card-img-top" alt="Imagen producto">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a th:href="@{/detalle/{id}(id=${producto.id})}" th:text="${producto.nombre}" style="text-decoration: none; color: inherit;">Nombre</a>
+                            </h5>
+                            <p class="card-text" th:text="${producto.descripcion}">Descripción</p>
+                            <p><strong>Categoría:</strong> <span th:text="${producto.categoria.nombre}">Categoría</span></p>
+                        </div>
+
+                        <!-- 🟢 Validación de disponibilidad -->
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span><strong>S/. </strong><span th:text="${producto.precio}">0.00</span></span>
+
+                            <!-- ✅ Si el producto está activo y tiene stock -->
+                            <div th:if="${producto.activo and producto.stock > 0}">
+                                <form th:action="@{/carrito/agregar}" method="post" class="d-flex align-items-center">
+                                    <input type="hidden" name="productoId" th:value="${producto.id}" />
+                                    <input type="number" name="cantidad" value="1" min="1" max="${producto.stock}" class="form-control me-2" style="width: 70px;" />
+                                    <button type="submit" class="btn btn-sm btn-primary">Agregar al carrito</button>
+                                </form>
+                            </div>
+
+                            <!-- ❌ Si el producto está inactivo o sin stock -->
+                            <div th:if="${!producto.activo or producto.stock == 0}" class="text-danger fw-bold">
+                                Producto no disponible
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    <p>&copy; 2025 Comercial Maysu | Trujillo, La Libertad</p>
+    <p>Contacto: comercial@maysu.com | Síguenos en redes</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
